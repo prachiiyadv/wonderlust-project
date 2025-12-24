@@ -38,10 +38,17 @@ pipeline {
         }
 
         stage('Trivy Filesystem Scan') {
-            steps {
-                bat 'trivy fs --severity HIGH,CRITICAL .'
-            }
-        }
+    steps {
+        bat '''
+        set TRIVY_CACHE_DIR=%WORKSPACE%\\.trivycache
+        trivy fs ^
+          --timeout 15m ^
+          --cache-dir %TRIVY_CACHE_DIR% ^
+          --severity HIGH,CRITICAL ^
+          .
+        '''
+    }
+}
     }
 
     post {
