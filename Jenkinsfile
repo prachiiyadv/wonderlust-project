@@ -40,13 +40,15 @@ pipeline {
         stage('Trivy Filesystem Scan') {
     steps {
         bat '''
-        set TRIVY_CACHE_DIR=%WORKSPACE%\\.trivycache
+        set TRIVY_CACHE_DIR=%USERPROFILE%\\.trivy
+        set TRIVY_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-db
+
         trivy fs ^
           --timeout 15m ^
-          --cache-dir %TRIVY_CACHE_DIR% ^
           --severity HIGH,CRITICAL ^
           .
         '''
+    }
     }
 }
     }
