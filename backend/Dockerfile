@@ -1,31 +1,31 @@
-# Stage 1
+# Stage 1: Build & Test
 FROM node:21 AS backend-builder
 
-# setup the working dir
 WORKDIR /app
 
-# code
+# Copy only package files first (better caching)
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
 COPY . .
 
-# packages install
-RUN npm i
-
-# tests
+# Run tests (optional – keep if you want CI validation)
 RUN npm run test
 
-# Stage 2
-FROM node:21-slim
+# Stage 2: Production Image
+FROM node:21-alpine
 
-# setup the working dir
 WORKDIR /app
 
-# copy the above stage as compressed
+# Copy built app from previous stage
 COPY --from=backend-builder /app .
 
+# Environment file
 COPY .env.docker .env
 
-# Port
+# Expose backend port (MATCH docker-compose)
 EXPOSE 8080
 
-# App
+# Start application
 CMD ["npm", "start"]
