@@ -527,3 +527,5 @@ eksctl delete cluster --name=wanderlust --region=us-west-1
 ```
 
 #
+/ /   s c m   p i p e l i n e   t e s t  
+ 
