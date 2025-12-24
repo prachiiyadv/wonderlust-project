@@ -22,21 +22,21 @@ pipeline {
         }
 
         stage('SonarQube Scan') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarScanner'
-                    withSonarQubeEnv('sonarQube') {
-                        bat """
-                        "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                        -Dsonar.projectKey=wonderlust-project ^
-                        -Dsonar.projectName=wonderlust-project ^
-                        -Dsonar.sources=. ^
-                        -Dsonar.token=%SONAR_TOKEN%
-                        """
-                    }
-                }
+    steps {
+        withCredentials([string(credentialsId: 'sonar1', variable: 'SONAR_TOKEN')]) {
+            withSonarQubeEnv('sonarQube') {
+                bat '''
+                echo Sonar token injected: %SONAR_TOKEN%
+                "C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat" ^
+                -Dsonar.projectKey=wonderlust-project ^
+                -Dsonar.projectName=wonderlust-project ^
+                -Dsonar.sources=. ^
+                -Dsonar.login=%SONAR_TOKEN%
+                '''
             }
         }
+    }
+}
 
         stage('Trivy Filesystem Scan') {
             steps {
