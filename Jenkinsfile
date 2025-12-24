@@ -30,7 +30,8 @@ pipeline {
                         "${scannerHome}\\bin\\sonar-scanner.bat" ^
                         -Dsonar.projectKey=wonderlust-project ^
                         -Dsonar.projectName=wonderlust-project ^
-                        -Dsonar.sources=.
+                        -Dsonar.sources=. ^
+                        -Dsonar.token=%SONAR_TOKEN%
                         """
                     }
                 }
@@ -38,19 +39,13 @@ pipeline {
         }
 
         stage('Trivy Filesystem Scan') {
-    steps {
-        bat '''
-        set TRIVY_CACHE_DIR=%USERPROFILE%\\.trivy
-        set TRIVY_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-db
-
-        trivy fs ^
-          --timeout 15m ^
-          --severity HIGH,CRITICAL ^
-          .
-        '''
-    }
-    }
-}
+            steps {
+                bat '''
+                set TRIVY_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-db
+                trivy fs --timeout 15m --severity HIGH,CRITICAL .
+                '''
+            }
+        }
     }
 
     post {
