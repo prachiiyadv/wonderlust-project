@@ -10,6 +10,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
+                echo "Auto build trigger test - ${new Date()}"
                 git branch: 'main',
                     url: 'https://github.com/prachiiyadv/wonderlust-project.git'
             }
