@@ -38,14 +38,13 @@ pipeline {
     }
 }
 
-        stage('Trivy Filesystem Scan') {
-            steps {
-                bat '''
-                set TRIVY_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-db
-                trivy fs --timeout 15m --severity HIGH,CRITICAL .
-                '''
-            }
-        }
+      stage('Trivy Filesystem Scan') {
+    steps {
+        bat '''
+        trivy fs --skip-db-update --severity HIGH,CRITICAL .
+        '''
+    }
+}
     }
 
     post {
